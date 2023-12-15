@@ -1,0 +1,79 @@
+version: "3"
+services:
+  postgres:
+    container_name: my_docs_postgres
+    image: postgres:15-alpine
+    networks:
+      - default
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=my_docs
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    container_name: my_docs_redis
+    image: redis
+    networks:
+      - default
+    ports:
+      - "6380:6379"
+  node:
+    container_name: my_docs_node
+    image: node:18-alpine
+    working_dir: /code/frontend/
+    command: 
+      - sh 
+      - -c 
+      - |
+        npm install && npm run dev
+    networks:
+      - default
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/code
+  django:
+    container_name: my_docs_django
+    build:
+      context: ./
+      dockerfile: docker/DockerfileDjango
+    command: 
+      - sh
+      - -c
+      - |
+        pip install -r requirements.txt &&
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8000
+    networks:
+      - default
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - postgres
+  celery:
+    container_name: my_docs_celery
+    build:
+      context: ./
+      dockerfile: docker/DockerfileDjango
+    command: 
+      - sh
+      - -c
+      - |
+        pip install -r requirements.txt &&
+        celery -A my_docs_project worker -l INFO
+    networks:
+      - default
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - postgres
+
+volumes:
+  postgres_data:
