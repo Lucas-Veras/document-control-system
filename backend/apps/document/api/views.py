@@ -25,4 +25,7 @@ class DocumentViewSet(CustomModelViewSet):
         """
         document = self.get_object()
         pdf = DocumentBusiness(document).generate_pdf()
-        return HttpResponse(pdf, content_type="application/pdf")
+
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = "attachment; filename={}.pdf".format(document.name)
+        return response

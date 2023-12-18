@@ -6,18 +6,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             display: flex;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
         }
 
         .container {
-            text-align: center;
-            background-color: #fff;
+            text-align: left;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -29,6 +25,7 @@
 
         p {
             color: #666;
+            margin: 0; /* Evita margens indesejadas causadas por padrões de navegador */
         }
     </style>
     <title>{% block title %}{{ name }}{% endblock %}</title>
