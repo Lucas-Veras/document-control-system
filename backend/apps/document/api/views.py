@@ -29,3 +29,12 @@ class DocumentViewSet(CustomModelViewSet):
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = "attachment; filename={}.pdf".format(document.name)
         return response
+
+    @action(detail=False, methods=["get"])
+    def validate_pdf(self, request, pk=None):
+        """
+        Return the pdf of the document
+        """
+        document = self.get_object()
+        pdf = DocumentBusiness(None).validate_pdf()
+        return Response({"valid": None})

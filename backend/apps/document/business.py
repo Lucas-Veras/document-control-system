@@ -21,5 +21,10 @@ class DocumentBusiness:
         return signed
 
     def generate_pdfa(self, pdf):
-        pdfa = PDFSigner(pdf).sign()
+        pdfa, _hash = PDFSigner(pdf).sign()
+        # PDFSigner(pdfa).validate()
+        return pdfa
+
+    def validate_pdf(self, pdf):
+        pdfa = PDFSigner(pdf).validate()
         return pdfa

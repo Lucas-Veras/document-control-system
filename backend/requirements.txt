@@ -32,3 +32,4 @@ pylint-django==2.5.3
 pdfkit==1.0.0
 pyOpenSSL==23.3.0
 PyPDF2==3.0.1
+pyHanko==0.21.0
