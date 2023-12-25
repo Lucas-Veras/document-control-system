@@ -10,6 +10,16 @@ class DocumentSerializer(serializers.ModelSerializer):
     DocumentSerializer
     """
 
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Document
-        fields = ("id", "name", "description")
+        fields = ("id", "name", "description", "user")
+
+
+class DocumentInputSerializer(serializers.Serializer):
+    """
+    DocumentInputSerializer
+    """
+
+    file = serializers.FileField()

@@ -18,3 +18,13 @@ class AccountRegisterSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         raise SerializerMethodDontAllowedException()
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+    UserSerializer
+    """
+
+    class Meta:
+        model = User
+        fields = ("id", "username", "first_name", "last_name", "email")

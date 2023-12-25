@@ -4,6 +4,7 @@ Global DRF Viewsets
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
+from rest_framework.mixins import ListModelMixin
 
 from apps.common.global_drf_render import CustomRenderer
 from apps.common.global_drf_viewsets_mixins import (
@@ -37,3 +38,15 @@ class CustomGenericViewSet(PermissionsMixin, SerializerAndPrefetchMixin, viewset
 
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     renderer_classes = [CustomRenderer]
+
+
+class CustomListOnlyModelViewSet(
+    PermissionsMixin, SerializerAndPrefetchMixin, viewsets.GenericViewSet, ListModelMixin
+):
+    """
+    A viewset that provides the default actions provided by the `ListModelMixin` and `RetrieveModelMixin` mixins.
+    """
+
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    renderer_classes = [CustomRenderer]
+    http_method_names = ["get", "head", "options"]

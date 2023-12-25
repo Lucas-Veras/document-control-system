@@ -8,7 +8,9 @@ db.sqlite3-journal
 media
 .env
 venv
-storage
+backend/storage/*.pdf
+backend/keys/*
+!backend/keys/.gitkeep
 
 node_modules
 dist

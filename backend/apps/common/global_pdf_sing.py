@@ -103,9 +103,21 @@ class PDFSigner:
         vc = ValidationContext(trust_roots=[cert])
 
         r = PdfFileReader(self.pdf)
+        if len(r.embedded_signatures) == 0:
+            return {
+                "valid": False,
+                "intact": False,
+                "md_algorithm": None,
+                "signed_at": None,
+            }
         sig = r.embedded_signatures[0]
         status = validate_pdf_signature(sig, vc)
-        print(status)
+        return {
+            "valid": status.valid,
+            "intact": status.intact,
+            "md_algorithm": status.md_algorithm,
+            "signed_at": status.signer_reported_dt,
+        }
 
 
 if __name__ == "__main__":

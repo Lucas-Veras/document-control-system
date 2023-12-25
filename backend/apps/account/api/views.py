@@ -23,3 +23,20 @@ class AccountViewSet(CustomGenericViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=201)
+
+
+class UserViewSet(CustomGenericViewSet):
+    """
+    UsersViewSet
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = {"me": account_serializers.UserSerializer}
+
+    @action(detail=False, methods=["get"])
+    def me(self, request, *args, **kwargs):
+        """
+        Me
+        """
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data, status=200)
