@@ -52,7 +52,7 @@ class DocumentPermissions(BasePermission):
         return False
 
     def can_list(self, request, view):
-        return True
+        return False
 
     def can_retrieve(self, request, view):
         document_id = request.parser_context["kwargs"]["pk"]

@@ -93,7 +93,9 @@ class PDFSigner:
 
         out = BytesIO()
         pdf_signer.sign_pdf(
-            w, output=out, appearance_text_params={"url": f"https://example.com/document-validation?hash={_hash}"}
+            w,
+            output=out,
+            appearance_text_params={"url": f"http://localhost:8000/api/v1/pdf/get_by_hash/?hash={_hash}"},
         )
 
         return out, _hash
