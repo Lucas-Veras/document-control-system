@@ -7,8 +7,11 @@ import { GenericErrorType } from "../interfaces/IResponse";
 import { loginSchema } from "../pages/Login/schemas/login";
 import AuthServices from "../services/AuthServices";
 import useApiStatus from "./useApiStatus";
+import { jwtDecode } from "jwt-decode";
+import useAuth from "./useAuth";
 
 const useLogin = () => {
+  const { setAuthTokens, setUser } = useAuth();
   const { isLoading, setIsLoading } = useApiStatus();
   const navigate = useNavigate();
   const {
@@ -21,15 +24,17 @@ const useLogin = () => {
     resolver: yupResolver<ILogin>(loginSchema),
     mode: "onChange",
   });
-  console.log(errors);
 
   const handleLogin = async (data: ILogin) => {
     setIsLoading(true);
 
     AuthServices.login(data)
-      .then(() => {
+      .then((res) => {
+        setAuthTokens(res);
+        setUser(jwtDecode(res.access));
+        localStorage.setItem("authTokens", JSON.stringify(res));
         reset();
-        navigate("/login");
+        navigate("/dashboard");
         toast.success("Login realizado com sucesso!");
       })
       .catch((error) => {
@@ -37,10 +42,10 @@ const useLogin = () => {
         toast.error("Erro ao criar conta!");
         error.response.data.errors.forEach(
           (error: GenericErrorType<keyof ILogin>) => {
-            setError(`${error.location}`, {
-              type: error.type,
-              message: error.message,
-            });
+            if (error.type === "system")
+              setError("root.serverError", {
+                message: error.message,
+              });
           }
         );
       })

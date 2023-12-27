@@ -1,6 +1,6 @@
 export interface IResponse<T> {
   data: T;
-  metadata: object;
+  metadata?: IMetadata;
   success: boolean;
   errors: ErrorType[];
 }
@@ -15,4 +15,16 @@ export interface GenericErrorType<T> {
   location: T;
   type: string;
   message: string;
+}
+
+export interface IMetadata {
+  links: {
+    next: string | null;
+    previous: string | null;
+  };
+  all_count: number;
+  current_count: number;
+  pages: number;
+  current_page: number;
+  per_page: number;
 }

@@ -12,11 +12,14 @@ const Login = () => {
     <main className="max-w-[25rem] mx-auto">
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mx-auto h-20 w-auto"
-            src={LogoPDF}
-            alt="Your Company"
-          />
+          <Link to={"/"}>
+            <img
+              className="mx-auto h-20 w-auto cursor-pointer"
+              src={LogoPDF}
+              alt="SecureSign"
+              title="SecureSign"
+            />
+          </Link>
           <h2 className="mt-8 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Entre na sua conta
           </h2>
@@ -32,6 +35,7 @@ const Login = () => {
             >
               <Input
                 id="username"
+                autoComplete="username"
                 isError={!!errors.username}
                 {...register("username")}
               />
@@ -51,6 +55,12 @@ const Login = () => {
                 {...register("password")}
               />
             </FormControl>
+
+            {errors.root?.serverError?.message && (
+              <p className="text-red-500 text-sm text-center">
+                {errors.root.serverError?.message}
+              </p>
+            )}
 
             <div>
               <button
