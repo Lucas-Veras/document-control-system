@@ -30,6 +30,11 @@ class PdfService {
     });
     return response.data;
   }
+
+  async validateByHash(hash: string) {
+    const response = await privateApi.get(`/pdf/get_by_hash/?hash=${hash}`);
+    return response.data;
+  }
 }
 
 export default new PdfService();
