@@ -29,11 +29,7 @@ cp backend/my_docs_project/local_settings_sample.py backend/my_docs_project/loca
 ```
 docker compose up -d
 ```
-5. Criando certificados para PDFS
-```
-docker compose exec django python manage.py generate_certs
-```
-6. Feito isso basta acessar [http://localhost:8000/admin](http://localhost:8000/admin) e ver se tudo deu certo.
+5. Feito isso basta acessar [http://localhost:8000/admin](http://localhost:8000/admin) e ver se tudo deu certo.
 
 ## ☕ Usando my_docs_project
 

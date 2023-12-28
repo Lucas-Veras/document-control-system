@@ -25,10 +25,10 @@ class PDFBusiness:
 
     def generate_pdf_signed(self, template_name="default_pdf.html", save=True):
         pdf = self.generate_pdf(template_name, save)
-        pdfa, _hash = PDFSigner(pdf).sign()
+        pdfa, _hash = PDFSigner(pdf, self.serializer_data["username"]).sign()
         orm_object = PDFSignedDocument()
         orm_object.hash = _hash
-        orm_object.file = File(pdfa, name=f"{_hash}.pdf")
+        orm_object.file = File(BytesIO(pdfa), name=f"{_hash}.pdf")
         orm_object.save()
         return pdfa
 

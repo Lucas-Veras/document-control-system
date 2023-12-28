@@ -76,6 +76,7 @@ class PDFViewSet(CustomGenericViewSet):
             "description": document.description,
         }
         pdf = PDFBusiness(data).generate_pdf()
+        print(pdf)
 
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = f"attachment; filename=document_{document.id}.pdf"
@@ -96,6 +97,7 @@ class PDFViewSet(CustomGenericViewSet):
         data = {
             "name": document.name,
             "description": document.description,
+            "username": request.user.username,
         }
         pdf = PDFBusiness(data).generate_pdf_signed()
 
