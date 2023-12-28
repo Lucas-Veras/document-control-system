@@ -15,11 +15,13 @@ export const UserProvider = ({
 }: {
   children: React.ReactNode[] | React.ReactNode;
 }) => {
-  const [user, setUser] = useState<IUser>();
+  const [user, setUser] = useState<IUser | undefined>();
   const { isLoading } = useGetUser({ setUser });
 
   return (
-    <UserContext.Provider value={{ user, setUser, isLoading }}>
+    <UserContext.Provider
+      value={{ user: user ?? undefined, setUser, isLoading }}
+    >
       {isLoading ? <>carregando...</> : children}
     </UserContext.Provider>
   );

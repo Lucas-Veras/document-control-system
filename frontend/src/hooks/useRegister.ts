@@ -31,7 +31,6 @@ const useRegister = () => {
         toast.success("Conta criada com sucesso!");
       })
       .catch((error) => {
-        console.log(error.response.data);
         toast.error("Erro ao criar conta!");
         error.response.data.errors.forEach(
           (error: GenericErrorType<keyof IRegister>) => {

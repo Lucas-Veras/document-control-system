@@ -17,7 +17,7 @@ const navigation = [
 const Home = () => {
   const { logoutUser } = useAuth();
 
-  const { user } = useUser();
+  const global = useUser();
   const userNavigation = useMemo(
     () => [{ name: "Sair", onClick: logoutUser }],
     [logoutUser]
@@ -37,11 +37,11 @@ const Home = () => {
           </div>
 
           <div className="flex flex-1 justify-end">
-            {user ? (
+            {global?.user ? (
               <Menu as="div" className="relative ml-3">
                 <div className="flex justify-center items-center gap-2 text-white text-xs">
                   <p className="text-gray-900">
-                    {formatText(user?.first_name, 15)}
+                    {formatText(global?.user?.first_name, 15)}
                   </p>
                   <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-primary text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary p-2">
                     <span className="absolute -inset-1.5" />

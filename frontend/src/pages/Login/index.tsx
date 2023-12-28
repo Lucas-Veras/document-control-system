@@ -72,7 +72,7 @@ const Login = () => {
                     <AiOutlineLoading3Quarters />
                   </div>
                 ) : (
-                  <p>Cadastrar-se</p>
+                  <p>Entrar</p>
                 )}
               </button>
             </div>

@@ -38,7 +38,6 @@ const useLogin = () => {
         toast.success("Login realizado com sucesso!");
       })
       .catch((error) => {
-        console.log(error.response.data);
         toast.error("Erro ao criar conta!");
         error.response.data.errors.forEach(
           (error: GenericErrorType<keyof ILogin>) => {

@@ -5,6 +5,7 @@ import { useUser } from "./useUser";
 import { IDocument } from "../interfaces/IDocument";
 import { toast } from "react-toastify";
 import { IMetadata } from "../interfaces/IResponse";
+import useAuth from "./useAuth";
 
 const useGetMyDocuments = ({ page }: { page: number }) => {
   const { isLoading: isLoadingUser, user } = useUser();
@@ -14,9 +15,15 @@ const useGetMyDocuments = ({ page }: { page: number }) => {
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [metadata, setMetadata] = useState<IMetadata>();
 
+  const authTokens = localStorage.getItem("authTokens");
+
   useEffect(() => {
     const getMyDocuments = () => {
-      if (!user?.id) return;
+      if (!user?.id || !authTokens) {
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
 
       DocumentServices.getMyDocuments({
@@ -39,8 +46,8 @@ const useGetMyDocuments = ({ page }: { page: number }) => {
           setIsLoading(false);
         });
     };
-    if (!isLoadingUser) getMyDocuments();
-  }, [user?.id, setIsLoading, isLoadingUser, setHasError, page]);
+    if (!isLoadingUser || !user?.id || !authTokens) getMyDocuments(); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   return { isLoading, documents, hasError, metadata };
 };

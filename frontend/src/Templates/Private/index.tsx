@@ -1,5 +1,5 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment, useCallback, useMemo } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { Link, NavLink } from "react-router-dom";
@@ -23,11 +23,17 @@ export default function PrivateTemplate({
   children: React.ReactNode[] | React.ReactNode;
 }) {
   const { logoutUser } = useAuth();
-  const { user } = useUser();
+  const { setUser } = useUser();
+  const global = useUser();
+
+  const handleLogout = useCallback(() => {
+    setUser(undefined);
+    logoutUser();
+  }, [logoutUser, setUser]);
 
   const userNavigation = useMemo(
-    () => [{ name: "Sair", onClick: logoutUser }],
-    [logoutUser]
+    () => [{ name: "Sair", onClick: handleLogout }],
+    [handleLogout]
   );
 
   return (
@@ -67,7 +73,7 @@ export default function PrivateTemplate({
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div className="flex justify-center items-center gap-2 text-white text-xs">
-                          <p>{user?.first_name}</p>
+                          {global?.user && <p>{global?.user?.first_name}</p>}
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-headerFocus text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-headerFocus p-2">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
@@ -87,7 +93,7 @@ export default function PrivateTemplate({
                           leaveTo="transform opacity-0 scale-95"
                         >
                           <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                            {user ? (
+                            {global?.user ? (
                               userNavigation.map((item) => (
                                 <Menu.Item key={item.name}>
                                   {({ active }) => (
@@ -153,13 +159,13 @@ export default function PrivateTemplate({
                       <FaRegUser />
                     </div>
                     <div className="ml-3">
-                      {user ? (
+                      {global?.user ? (
                         <>
                           <div className="text-base font-medium leading-none text-white">
-                            {formatText(user?.first_name, 80)}
+                            {formatText(global?.user?.first_name, 80)}
                           </div>
                           <div className="text-sm font-medium leading-none text-gray-200">
-                            {formatText(user?.email)}
+                            {formatText(global?.user?.email)}
                           </div>
                         </>
                       ) : (
@@ -173,7 +179,7 @@ export default function PrivateTemplate({
                     </div>
                   </div>
                   <div className="mt-3 space-y-1 px-2">
-                    {user &&
+                    {global?.user &&
                       userNavigation.map((item) => (
                         <Disclosure.Button
                           key={item.name}

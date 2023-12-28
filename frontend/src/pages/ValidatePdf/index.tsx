@@ -44,7 +44,16 @@ const ValidatePdf = () => {
 
     PdfServices.validatePdf(file)
       .then((res) => {
-        console.log(res);
+        if (res.data.valid && res.data.intact) {
+          toast.success("O documento é autêntico e não foi modificado");
+        } else if (res.data.valid) {
+          toast.success("O documento é autêntico");
+        } else if (res.data.intact) {
+          toast.error("O documento foi não modificado");
+        } else {
+          toast.error("O documento não é autêntico");
+        }
+
         setIsLoading(false);
       })
       .catch(() => {
@@ -58,16 +67,17 @@ const ValidatePdf = () => {
   const handleSubmitHash = (data: { hash: string }) => {
     setIsLoadingHash(true);
     PdfServices.validateByHash(data.hash)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
+        toast.success("O hash é válido");
         reset();
         setIsLoadingHash(false);
       })
       .catch((err) => {
         if (err.response.data.errors[0]?.message === "Not found.") {
+          toast.error("Hash inválido");
           setError("hash", {
             type: "manual",
-            message: "Documento não encontrado",
+            message: "Hash inválido",
           });
         } else {
           toast.error("Erro ao validar documento, tente novamente mais tarde.");
