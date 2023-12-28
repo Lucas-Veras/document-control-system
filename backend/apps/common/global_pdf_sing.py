@@ -8,12 +8,12 @@ from pyhanko.keys import load_cert_from_pemder
 from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
 from pyhanko.pdf_utils.reader import PdfFileReader
 from pyhanko.sign import fields, signers
-from pyhanko.sign.validation import validate_pdf_signature
+from pyhanko.sign.validation import read_certification_data, validate_pdf_signature
 from pyhanko_certvalidator import ValidationContext
 
 
 class PDFSigner:
-    def __init__(self, pdf, username):
+    def __init__(self, pdf, username=None):
         self.pdf = pdf
         self.username = username
         self.cert_pem_path = f"./keys/{username}_certificate.cer"
@@ -69,7 +69,7 @@ class PDFSigner:
 
         _hash = uuid.uuid4().hex
 
-        meta = signers.PdfSignatureMetadata(field_name="Signature")
+        meta = signers.PdfSignatureMetadata(field_name="Signature", name=self.username)
         pdf_signer = signers.PdfSigner(
             meta,
             signer=signer,
@@ -88,20 +88,24 @@ class PDFSigner:
         return out.read(), _hash
 
     def validate(self):
-        cert = load_cert_from_pemder(self.cert_pem_path)
-        vc = ValidationContext(trust_roots=[cert])
-
         r = PdfFileReader(self.pdf)
         if len(r.embedded_signatures) == 0:
             return {
+                "by": None,
                 "valid": False,
                 "intact": False,
                 "md_algorithm": None,
                 "signed_at": None,
             }
         sig = r.embedded_signatures[0]
+        self.username = sig.__dict__["sig_object"]["/Name"]
+        self.cert_pem_path = f"./keys/{self.username}_certificate.cer"
+
+        cert = load_cert_from_pemder(self.cert_pem_path)
+        vc = ValidationContext(trust_roots=[cert])
         status = validate_pdf_signature(sig, vc)
         return {
+            "by": self.username,
             "valid": status.valid,
             "intact": status.intact,
             "md_algorithm": status.md_algorithm,
